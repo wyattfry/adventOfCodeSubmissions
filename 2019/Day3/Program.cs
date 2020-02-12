@@ -18,6 +18,8 @@ namespace Day3
             var wire1 = inputText[0];
             var wire2 = inputText[1];
 
+            Console.WriteLine("Adding paths...");
+
             circuitAnalyzer.AddVectors(wire1);
             circuitAnalyzer.AddVectors(wire2);
 

@@ -63,8 +63,7 @@ namespace Day3
 
             if (crossedByAnyLines && notCrossedByThisLine)
             {
-                // Intersection!!11111!11111!1!!1
-                // Console.WriteLine($"Intersection at ({x}, {y})!");
+                // New Intersection
                 var distanceToOrigin = Math.Abs(x) + Math.Abs(y);
                 this.DistanceBetweenOriginAndClosestIntersection = Math.Min(distanceToOrigin, this.DistanceBetweenOriginAndClosestIntersection);
             }
