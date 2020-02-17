@@ -115,5 +115,21 @@ namespace Day3Test
             // Assert
             sut.DistanceBetweenOriginAndClosestIntersection.ShouldBe(1);
         }
+
+        [Fact]
+        public void When_intersections_then_smallest_path_is_correct()
+        {
+            // Arrange
+            var sut = new CircuitAnalyzer();
+            var wire1 = "U5";
+            var wire2 = "R1,U1,L2,U1,R2";
+
+            // Act
+            sut.AddVectors(wire1);
+            sut.AddVectors(wire2);
+
+            // Assert
+            sut.SmallestPathLengthSumAtIntersection.ShouldBe(4);
+        }
     }
 }
