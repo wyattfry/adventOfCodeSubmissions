@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Day4
 {
@@ -19,6 +18,7 @@ namespace Day4
                 new AdjacentDigitValidator(),
                 new NotDecreasingValidator(),
                 new RangeValidator(this.PasswordRangeInclusive.min, this.PasswordRangeInclusive.max),
+                new DigitPairValidator(this.RequiredLength), // Part 2 requirement
             };
         }
 
@@ -66,7 +66,19 @@ namespace Day4
             {
                 var passwordsFound = 0;
 
-                for (int i = 0; i <= 9; i++)
+                // Shortcut due to NotDecreasing rule
+                int startingDigit;
+
+                if (string.IsNullOrEmpty(potentialPassword))
+                {
+                    startingDigit = 0;
+                }
+                else
+                {
+                    startingDigit = int.Parse(potentialPassword) % 10;
+                }
+
+                for (int i = startingDigit; i <= 9; i++)
                 {
                     var nextPotentialPassword = potentialPassword + i.ToString();
 
@@ -193,6 +205,64 @@ namespace Day4
             public bool CouldBecomeValid(string potentialPassword)
             {
                 return this.IsValid(potentialPassword);
+            }
+        }
+
+        public class DigitPairValidator : IValidator
+        {
+            public int RequiredLength { get; set; }
+
+            public DigitPairValidator(int requiredLength)
+            {
+                this.RequiredLength = requiredLength;
+            }
+
+            public bool CouldBecomeValid(string potentialpassword)
+            {
+                if (potentialpassword.Length <= this.RequiredLength - 2)
+                {
+                    return true;
+                }
+                if (potentialpassword.Length == this.RequiredLength - 1)
+                {
+                    for (var i = 0; i < potentialpassword.Length - 1; i++)
+                    {
+                        if (potentialpassword[i] != potentialpassword[i + 1])
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                return false;
+            }
+
+            public bool IsValid(string potentialPassword)
+            {
+                var pointer = 0;
+                var groupSize = 0;
+                while (pointer < potentialPassword.Length)
+                {
+                    groupSize++;
+
+                    var isBoundary = pointer + 1 > potentialPassword.Length - 1
+                        || potentialPassword[pointer] != potentialPassword[pointer + 1];
+
+                    if (isBoundary)
+                    {
+                        if (groupSize == 2)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            groupSize = 0;
+                        }
+                    }
+
+                    pointer++;
+                }
+                return false;
             }
         }
     }

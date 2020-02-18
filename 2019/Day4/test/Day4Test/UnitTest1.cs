@@ -1,6 +1,7 @@
 using Day4;
 using Xunit;
 using Shouldly;
+using static Day4.PasswordGenerator;
 
 namespace Day4Test
 {
@@ -17,9 +18,10 @@ namespace Day4Test
         public void When_invalid_length_should_not_be_valid(string invalidPassword)
         {
             // Arrange
+            var sut = new LengthValidator(6);
 
             // Act
-            var result = this.sut.IsValid(invalidPassword);
+            var result = sut.IsValid(invalidPassword);
 
             // assess
             result.ShouldBeFalse();
@@ -29,10 +31,11 @@ namespace Day4Test
         public void When_valid_length_should_be_valid()
         {
             // Arrange
-            var validLengthPassword = "113456";
+            var sut = new LengthValidator(6);
+            var validLengthPassword = "556677";
 
             // Act
-            var result = this.sut.IsValid(validLengthPassword);
+            var result = sut.IsValid(validLengthPassword);
 
             // Assert
             result.ShouldBeTrue();
@@ -56,9 +59,10 @@ namespace Day4Test
         {
             // Arrange
             var noAdjacentDigits = "113456";
+            var sut = new AdjacentDigitValidator();
 
             // Act
-            var result = this.sut.IsValid(noAdjacentDigits);
+            var result = sut.IsValid(noAdjacentDigits);
 
             // Assert
             result.ShouldBeTrue();
@@ -82,8 +86,11 @@ namespace Day4Test
         [InlineData("111112")]
         public void When_not_decreasing_then_valid(string notDecreasingPassword)
         {
+            // Arrange
+            var sut = new NotDecreasingValidator();
+
             // Act
-            var result = this.sut.IsValid(notDecreasingPassword);
+            var result = sut.IsValid(notDecreasingPassword);
 
             // Assess
             result.ShouldBeTrue();
@@ -91,6 +98,7 @@ namespace Day4Test
 
         [Theory]
         [InlineData("2")]
+        [InlineData("44444")]
         public void When_could_not_become_valid_then_false(string couldBecomeValidPassword)
         {
             // Act
@@ -100,8 +108,10 @@ namespace Day4Test
             result.ShouldBeFalse();
         }
         [Theory]
-
         [InlineData("4")]
+        [InlineData("4444")]
+        [InlineData("4445")]
+        [InlineData("77778")]
         public void When_could_become_valid_then_true(string couldBecomeValidPassword)
         {
             // Act
@@ -111,5 +121,33 @@ namespace Day4Test
             result.ShouldBeTrue();
         }
 
+        [Theory]
+        [InlineData("112233")]
+        [InlineData("111122")]
+        public void When_digit_pair_then_valid(string validPassword)
+        {
+            // Arrange
+            var sut = new DigitPairValidator(6);
+
+            // Act
+            var result = sut.IsValid(validPassword);
+
+            // Assert
+            result.ShouldBeTrue();
+        }
+
+        [Theory]
+        [InlineData("123444")]
+        public void When_no_digit_pair_then_invalid(string invalidPassword)
+        {
+            // Arrange
+            var sut = new DigitPairValidator(6);
+
+            // Act
+            var result = sut.IsValid(invalidPassword);
+
+            // Assert
+            result.ShouldBeFalse();
+        }
     }
 }

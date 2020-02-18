@@ -27,7 +27,7 @@ namespace Day4
                 }
             }
 
-            Console.WriteLine($"Number of possible passwords: {validPasswordCount}.");
+            Console.WriteLine($"Number of possible passwords: {validPasswordCount}");
 
             Console.WriteLine($"Done in {watch.ElapsedMilliseconds}ms");
 
@@ -37,9 +37,14 @@ namespace Day4
 
             watch.Stop();
 
-            Console.WriteLine($"Number of possible passwords (with recursion): {validPasswordCount}.");
+            Console.WriteLine();
+
+            Console.WriteLine($"Number of possible passwords (with recursion): {validPasswordCount}");
 
             Console.WriteLine($"Done in {watch.ElapsedMilliseconds}ms");
+
+            // Part 2 answer is NOT
+            // - 248 (too low)
         }
     }
 }
