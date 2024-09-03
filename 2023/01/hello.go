@@ -6,29 +6,23 @@ import (
 	"log"
 	"os"
 	"regexp"
-	"slices"
 	"strconv"
 )
 
-func numberWords() []string {
-	return []string{
-		"one",
-		"two",
-		"three",
-		"four",
-		"five",
-		"six",
-		"seven",
-		"eight",
-		"nine",
+var (
+	numberWords = map[string]int{
+		"one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+		"six": 6, "seven": 7, "eight": 8, "nine": 9,
 	}
-}
+	// Pre-compile regex patterns to reuse them
+	firstDigitPattern = regexp.MustCompile(`([a-z]*)(\d)`)
+	lastDigitPattern  = regexp.MustCompile(`(\d)([a-z]*)$`)
+	anyDigitPattern   = regexp.MustCompile(`(one|two|three|four|five|six|seven|eight|nine|\d)`)
+)
 
 func main() {
 	// solve("./input-test.txt")
 	solve("./input.txt")
-
-	// part 2: 52844 is too high
 }
 
 func solve(fileName string) {
@@ -39,86 +33,64 @@ func solve(fileName string) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	var sum int
-	var sumPart2 int
+	var sumPart1, sumPart2 int
+
 	for scanner.Scan() {
 		line := scanner.Text()
-		value := getFirstDigit(line)*10 + getLastDigit(line)
-		sum += value
-
-		calNumber := getFirstDigit2(line)*10 + getLastDigit2(line, 1)
-		// fmt.Println(calNumber)
-		sumPart2 += calNumber
-		// fmt.Print(sumPart2, " ")
+		sumPart1 += calculateSum(line, getFirstDigit, getLastDigit)
+		sumPart2 += calculateSum(line, getFirstMatchDigit, getLastMatchDigit)
 	}
-	fmt.Println("Solution Part 1:", sum, "File:", fileName)
-	fmt.Println("Solution Part 2:", sumPart2, "File:", fileName)
+
+	fmt.Printf("Solution Part 1: %d (File: %s)\n", sumPart1, fileName)
+	fmt.Printf("Solution Part 2: %d (File: %s)\n", sumPart2, fileName)
+}
+
+func calculateSum(input string, firstDigitFunc, lastDigitFunc func(string) int) int {
+	first := firstDigitFunc(input)
+	last := lastDigitFunc(input)
+	if first == -1 || last == -1 {
+		return 0
+	}
+	return first*10 + last
 }
 
 func stringToInt(str string) int {
-	// fmt.Println("strotint input", str)
-	i, err := strconv.Atoi(str)
-	if err != nil {
-		result := slices.Index(numberWords(), str) + 1
-		if result != 0 {
-			// fmt.Println("parsed", str, "to", result)
-			return result
-		} else {
-			// fmt.Println("couldn't parse", str, "into an integer")
-			return -1
-		}
+	if num, err := strconv.Atoi(str); err == nil {
+		return num
 	}
-	return i
+	if num, found := numberWords[str]; found {
+		return num
+	}
+	return -1
 }
 
 func getFirstDigit(input string) int {
-	re := regexp.MustCompile(`([a-z]*)(\d)`)
-	matches := re.FindStringSubmatch(input)
+	matches := firstDigitPattern.FindStringSubmatch(input)
 	if matches != nil {
 		return stringToInt(matches[2])
-	} else {
-		return -1
 	}
+	return -1
 }
 
 func getLastDigit(input string) int {
-	re := regexp.MustCompile(`(\d)([a-z]*)$`)
-	matches := re.FindStringSubmatch(input)
+	matches := lastDigitPattern.FindStringSubmatch(input)
 	if matches != nil {
 		return stringToInt(matches[1])
-	} else {
-		return -1
 	}
+	return -1
 }
 
-func getFirstDigit2(input string) int {
-	// go does not support positive lookahead: https://github.com/google/re2/wiki/Syntax
-	re := regexp.MustCompile(`(=?(one|two|three|four|five|six|seven|eight|nine|\d))`)
-	matches := re.FindAllString(input, -1)
-	if matches != nil {
-		return stringToInt(matches[0])
-	} else {
-		return -1
-	}
+func getFirstMatchDigit(input string) int {
+	matches := anyDigitPattern.FindString(input)
+	return stringToInt(matches)
 }
 
-func getLastDigit2(input string, length int) int {
-	// fmt.Println("length", length, "    string length", len(input))
-	if length > len(input) {
-		// fmt.Println("HERE")
-		return -1
-	}
-	var output int
-	for output == 0 {
-		toParse := input[len(input)-length:]
-		// fmt.Println("toParse", toParse)
-		output = getFirstDigit2(toParse)
-		// fmt.Println("output", output)
-		if output > 0 {
-			return output
-		} else {
-			return getLastDigit2(input, length+1)
+func getLastMatchDigit(input string) int {
+	for length := 1; length <= len(input); length++ {
+		substr := input[len(input)-length:]
+		if digit := getFirstMatchDigit(substr); digit > 0 {
+			return digit
 		}
 	}
-	return output
+	return -1
 }

@@ -31,7 +31,7 @@ func TestStringToInt(t *testing.T) {
 
 func TestGetLastDigitPart2(t *testing.T) {
 	want := 1
-	result := getLastDigit2("abc1", 1)
+	result := getLastMatchDigit("abc1")
 	if want != result {
 		t.Fatalf(`getLastDigitPart2("%s", 1) = %d, wanted %d`, "abc1", result, want)
 	}
@@ -39,7 +39,7 @@ func TestGetLastDigitPart2(t *testing.T) {
 
 func TestGetLastDigitPart2_2(t *testing.T) {
 	want := 1
-	result := getLastDigit2("abcone", 1)
+	result := getLastMatchDigit("abcone")
 	if want != result {
 		t.Fatalf(`getLastDigitPart2("%s", 1) = %d, wanted %d`, "abc1", result, want)
 	}
@@ -47,7 +47,7 @@ func TestGetLastDigitPart2_2(t *testing.T) {
 
 func TestGetLastDigitPart2_3(t *testing.T) {
 	want := 8
-	result := getLastDigit2("oneight", 1)
+	result := getLastMatchDigit("oneight")
 	if want != result {
 		t.Fatalf(`getLastDigitPart2("%s", 1) = %d, wanted %d`, "abc1", result, want)
 	}
@@ -55,7 +55,7 @@ func TestGetLastDigitPart2_3(t *testing.T) {
 
 func TestGetLastDigitPart2_4(t *testing.T) {
 	want := 3
-	result := getLastDigit2("asdf3asdf", 1)
+	result := getLastMatchDigit("asdf3asdf")
 	if want != result {
 		t.Fatalf(`getLastDigitPart2("%s", 1) = %d, wanted %d`, "abc1", result, want)
 	}
@@ -76,9 +76,9 @@ func TestFirstDigit2(t *testing.T) {
 	}
 	for _, element := range cases {
 		want := element.output / 10
-		result := getFirstDigit2(element.input)
+		result := getFirstMatchDigit(element.input)
 		want2 := element.output % 10
-		result2 := getLastDigit2(element.input, 1)
+		result2 := getLastMatchDigit(element.input)
 		if want != result {
 			t.Fatalf(`getFirstDigit2("%s") = %d, wanted %d`, element.input, result, want)
 		}
