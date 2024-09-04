@@ -16,43 +16,58 @@ var (
 )
 
 func Solve(file string) {
-	var gameIdSum int
-	for index, line := range common.Readlines(file) {
-		for color, count := range colorsCount {
-			if getHighestForColor(line, color) > count {
-				continue
-			}
-		}
-		gameId := index + 1
-		gameIdSum += gameId
-	}
-	fmt.Println("Solution for part 1:", gameIdSum)
+	lines := common.Readlines(file)
+	part1Result := calculateGameIDSum(lines)
+	fmt.Println("Solution for part 1:", part1Result)
 
-	var powerOfSetsSum int
-	for _, line := range common.Readlines(file) {
-		powerOfSetsSum += getPowerOfSet(line)
-	}
-	fmt.Println("Solution for part 2:", powerOfSetsSum)
+	part2Result := calculatePowerOfSetsSum(lines)
+	fmt.Println("Solution for part 2:", part2Result)
 }
 
-func getHighestForColor(gamestring string, color string) int {
-	matches := regexp.MustCompile(fmt.Sprintf("(\\d+)( %s)", color)).FindAllStringSubmatch(gamestring, -1)
-	var highest int
-	for _, str := range matches {
-		if num, err := strconv.Atoi(str[1]); err == nil {
-			if num > highest {
-				highest = num
-			}
+func calculateGameIDSum(lines []string) int {
+	var gameIdSum int
+	for index, line := range lines {
+		if isValidGameID(line) {
+			gameIdSum += index + 1
 		}
 	}
+	return gameIdSum
+}
 
+func isValidGameID(line string) bool {
+	for color, count := range colorsCount {
+		if getHighestForColor(line, color) > count {
+			return false
+		}
+	}
+	return true
+}
+
+func calculatePowerOfSetsSum(lines []string) int {
+	var powerOfSetsSum int
+	for _, line := range lines {
+		powerOfSetsSum += getPowerOfSet(line)
+	}
+	return powerOfSetsSum
+}
+
+func getHighestForColor(gameString, color string) int {
+	re := regexp.MustCompile(fmt.Sprintf(`(\d+)\s+%s`, color))
+	matches := re.FindAllStringSubmatch(gameString, -1)
+
+	highest := 0
+	for _, match := range matches {
+		if num, err := strconv.Atoi(match[1]); err == nil && num > highest {
+			highest = num
+		}
+	}
 	return highest
 }
 
-func getPowerOfSet(gamestring string) int {
+func getPowerOfSet(gameString string) int {
 	powerOfSet := 1
 	for color := range colorsCount {
-		powerOfSet *= getHighestForColor(gamestring, color)
+		powerOfSet *= getHighestForColor(gameString, color)
 	}
 	return powerOfSet
 }
