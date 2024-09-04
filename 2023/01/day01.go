@@ -1,4 +1,4 @@
-package main
+package day01
 
 import (
 	"bufio"
@@ -20,12 +20,12 @@ var (
 	anyDigitPattern   = regexp.MustCompile(`(one|two|three|four|five|six|seven|eight|nine|\d)`)
 )
 
-func main() {
-	// solve("./input-test.txt")
-	solve("./input.txt")
-}
+// func main() {
+// 	// solve("./input-test.txt")
+// 	solve("./input.txt")
+// }
 
-func solve(fileName string) {
+func Solve(fileName string) {
 	file, err := os.Open(fileName)
 	if err != nil {
 		log.Fatal(err)
