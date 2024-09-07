@@ -13,8 +13,10 @@ var (
 	digitPattern = regexp.MustCompile(`\d{1}`)
 )
 
+// Solve reads the input file and prints the solutions for both parts.
 func Solve(file string) {
 	lines := common.Readlines(file)
+
 	part1Result := calculatePartNumberSum(lines)
 	fmt.Println("Solution for part 1:", part1Result, file)
 
@@ -22,59 +24,42 @@ func Solve(file string) {
 	fmt.Println("Solution for part 2:", part2Result, file)
 }
 
+// calculatePartNumberSum calculates the sum of numbers adjacent to special symbols.
 func calculatePartNumberSum(lines []string) int {
-	var sum int
-	for _, num := range parseNumbers(lines, digitIsNextToSymbol) {
+	numbers := parseNumbers(lines, digitIsNextToSymbol)
+	sum := 0
+	for _, num := range numbers {
 		sum += num
 	}
-
 	return sum
 }
 
+// parseNumbers extracts numbers from a 2D schematic based on a filter function.
 func parseNumbers(schematic []string, filter func(schematicString string, digitIndex int, rowLength int) bool) []int {
 	var numbers []int
-	var inNumber bool
-	var currentNumber int
-	var numberIsNextToSymbol bool
-
-	// convert string array schematic to single string to ease traversal
 	schematicString := strings.Join(schematic, "")
+	inNumber := false
+	currentNumber := 0
+	numberIsNextToSymbol := false
 
-	// 1. advance char x char until a digit is found or end of input
 	for index, c := range schematicString {
-		digit := int(c - '0') // convert rune into int
-		if digit >= 0 && digit <= 9 {
-			// Character is 0-9
+		if isDigit(c) {
+			// Start or continue a number
 			inNumber = true
-			currentNumber *= 10
+			currentNumber = currentNumber*10 + int(c-'0')
 
-			// 2. add digit to a buffer
-			currentNumber += digit
-
-			// 3. check all around for a special symbol
+			// Check for symbols around the digit
 			if numberIsNextToSymbol || filter(schematicString, index, len(schematic[0])) {
-
-				// 4. if one is found mark number to be added to sum
 				numberIsNextToSymbol = true
 			}
-
-			// Part 2
-			// asteriskIndicies = getAdjacentAsterisks(schematicString, index, len(schematic[0])) {
-			//
-			// }
-
-			// 5. advance to next char, if digit return to step 2
 		} else {
-			// Character is NOT 0-9
+			// Handle end of a number
 			if inNumber {
 				inNumber = false
 				if numberIsNextToSymbol {
-
-					// 6. if not a digit, and number is marked, add to sum
 					numbers = append(numbers, currentNumber)
 					numberIsNextToSymbol = false
 				}
-				// clear buffer
 				currentNumber = 0
 			}
 		}
@@ -82,157 +67,150 @@ func parseNumbers(schematic []string, filter func(schematicString string, digitI
 	return numbers
 }
 
+// digitIsNextToSymbol checks if a digit is adjacent to any special symbol.
+func digitIsNextToSymbol(schematicString string, digitIndex int, rowLength int) bool {
+	for _, offset := range generateOffsets(rowLength) {
+		if isSpecialSymbolAt(schematicString, digitIndex+offset) {
+			return true
+		}
+	}
+	return false
+}
+
+// generateOffsets returns offsets for checking surrounding characters.
+func generateOffsets(rowLength int) []int {
+	return []int{
+		1, -1,
+		rowLength, rowLength + 1, rowLength - 1,
+		-rowLength, -rowLength + 1, -rowLength - 1,
+	}
+}
+
+// isSpecialSymbolAt checks if there is a special symbol at the specified index.
+func isSpecialSymbolAt(s string, index int) bool {
+	r, err := getRuneAtIndex(s, index)
+	if err != nil {
+		return false
+	}
+	return isSpecialSymbol(r)
+}
+
+// isSpecialSymbol checks if a character is a special symbol.
 func isSpecialSymbol(input rune) bool {
 	return strings.ContainsRune("#$%&*+-/=@", input)
 }
 
+// isDigit checks if a character is a digit.
 func isDigit(input rune) bool {
-	// return strings.ContainsRune("0123456789", input)
-	return digitPattern.Match([]byte(string(input)))
+	return digitPattern.MatchString(string(input))
 }
 
+// getRuneAtIndex safely gets a rune at a specific index.
 func getRuneAtIndex(s string, index int) (rune, error) {
-	if index < 0 || index > len(s)-1 {
+	if index < 0 || index >= len(s) {
 		return 0, errors.New("index out of bounds")
 	}
 	return rune(s[index]), nil
 }
 
-// What if a number is next to two symbols?
-func digitIsNextToSymbol(schematicString string, digitIndex int, rowLength int) bool {
-	offsets := []int{
-		1,
-		-1,
-		rowLength,
-		rowLength + 1,
-		rowLength - 1,
-		-rowLength,
-		-rowLength + 1,
-		-rowLength - 1,
-	}
-	for _, offset := range offsets {
-		r, err := getRuneAtIndex(schematicString, digitIndex+offset)
-		if err == nil {
-			if isSpecialSymbol(r) {
-				return true
-			}
-		}
-
-	}
-	return false
-}
-
-// Part 2: find '*'s with exactly two numbers around it ( signifying a gear), multiply and get sum of all
-// 1. iterate through schematic ([]string), build two maps and array:
-//   1.1 [row,col] = numberId -- for every "cell" that is a digit
-//   1.2 [numberId] = number -- for every number (1 or more digits)
-//   1.3 ["asterisk row,col"]
-// 2. make a function that for a given row,col returns an array of adjacent numbers
-//    using the above maps
-// 3. iterate through asterisk location array, getting all adjacent numbers for each
-// 4. for those with exactly two adjacent numbers, multiply them, add to a running sum
-
-type partNumbers struct {
-	schematic      []string
-	indexIdMap     map[string]int // ["row,col"] = numberId
-	idNumberMap    map[int]int    // [numberId] = number
-	asteriskRowCol []string
-}
-
-func makePartNumbers(schematic []string) partNumbers {
-	var output partNumbers
-	output.schematic = append(output.schematic, schematic...)
-	output.idNumberMap = map[int]int{
-		-1: -1,
-	}
-	output.indexIdMap = map[string]int{
-		"foo": -1,
-	}
-
-	var inNumber bool
-	var currentNumber int
-	var currentNumberId int
-
-	for rowNumber, row := range schematic {
-		for colNumber, col := range row {
-			if isDigit(col) {
-				inNumber = true
-				currentNumber *= 10
-				currentNumber += int(col - '0')
-				output.indexIdMap[strconv.Itoa(rowNumber)+","+strconv.Itoa(colNumber)] = currentNumberId
-			} else {
-				if inNumber {
-					inNumber = false
-					output.idNumberMap[currentNumberId] = currentNumber
-					currentNumberId += 1
-					currentNumber = 0
-				}
-				if col == '*' {
-					output.asteriskRowCol = append(output.asteriskRowCol, strconv.Itoa(rowNumber)+","+strconv.Itoa(colNumber))
-				}
-			}
-		}
-		// End of Row
-		if inNumber {
-			inNumber = false
-			output.idNumberMap[currentNumberId] = currentNumber
-			currentNumberId += 1
-			currentNumber = 0
-		}
-	}
-
-	return output
-}
-
-func getAdjacentNumbers(pn partNumbers, row int, col int) []int {
-	idNumbers := map[int]int{}
-
-	rcs := [][]int{
-		{row - 1, col + 0}, // N
-		{row - 1, col + 1}, // NE
-		{row - 0, col + 1}, // E
-		{row + 1, col + 1}, // SE
-		{row + 1, col + 0}, // S
-		{row + 1, col - 1}, // SW
-		{row + 0, col - 1}, // W
-		{row - 1, col - 1}, // NW
-	}
-
-	for _, rc := range rcs {
-		// Continue if out of bounds
-		if rc[0] < 0 || rc[0] > len(pn.schematic)-1 {
-			continue
-		}
-		if rc[1] < 0 || rc[1] > len(pn.schematic[0])-1 {
-			continue
-		}
-
-		id, ok := pn.indexIdMap[strconv.Itoa(rc[0])+","+strconv.Itoa(rc[1])]
-		if ok {
-			idNumbers[id] = pn.idNumberMap[id]
-		}
-	}
-
-	// map[string]int -> []int (of map values)
-	r := make([]int, 0, len(idNumbers))
-	for _, v := range idNumbers {
-		r = append(r, v)
-	}
-	return r
-}
-
+// Part 2 logic for calculating the gear ratio sum.
 func calculateGearRatioSum(schematic []string) int {
-	var sum int
 	pn := makePartNumbers(schematic)
+	sum := 0
 	for _, asteriskLocation := range pn.asteriskRowCol {
-		s := strings.Split(asteriskLocation, ",")
-		row, _ := strconv.Atoi(s[0])
-		col, _ := strconv.Atoi(s[1])
+		row, col := parseRowCol(asteriskLocation)
 		adjacentNumbers := getAdjacentNumbers(pn, row, col)
 		if len(adjacentNumbers) == 2 {
 			sum += adjacentNumbers[0] * adjacentNumbers[1]
 		}
 	}
-
 	return sum
+}
+
+// parseRowCol parses a row and column from a string representation.
+func parseRowCol(location string) (int, int) {
+	s := strings.Split(location, ",")
+	row, _ := strconv.Atoi(s[0])
+	col, _ := strconv.Atoi(s[1])
+	return row, col
+}
+
+// makePartNumbers constructs a struct mapping indices to numbers and identifying asterisk positions.
+func makePartNumbers(schematic []string) partNumbers {
+	pn := partNumbers{
+		schematic:      schematic,
+		indexIdMap:     make(map[string]int),
+		idNumberMap:    make(map[int]int),
+		asteriskRowCol: []string{},
+	}
+
+	currentNumberId := 0
+	inNumber := false
+	currentNumber := 0
+
+	for rowNumber, row := range schematic {
+		for colNumber, col := range row {
+			if isDigit(col) {
+				inNumber = true
+				currentNumber = currentNumber*10 + int(col-'0')
+				pn.indexIdMap[fmt.Sprintf("%d,%d", rowNumber, colNumber)] = currentNumberId
+			} else {
+				if inNumber {
+					pn.idNumberMap[currentNumberId] = currentNumber
+					currentNumberId++
+					inNumber = false
+					currentNumber = 0
+				}
+				if col == '*' {
+					pn.asteriskRowCol = append(pn.asteriskRowCol, fmt.Sprintf("%d,%d", rowNumber, colNumber))
+				}
+			}
+		}
+		if inNumber {
+			pn.idNumberMap[currentNumberId] = currentNumber
+			currentNumberId++
+			inNumber = false
+			currentNumber = 0
+		}
+	}
+	return pn
+}
+
+// getAdjacentNumbers retrieves numbers adjacent to a specific cell.
+func getAdjacentNumbers(pn partNumbers, row, col int) []int {
+	idNumbers := make(map[int]int)
+
+	for _, rc := range getSurroundingCells(row, col) {
+		if rc[0] < 0 || rc[0] >= len(pn.schematic) || rc[1] < 0 || rc[1] >= len(pn.schematic[0]) {
+			continue
+		}
+		id, exists := pn.indexIdMap[fmt.Sprintf("%d,%d", rc[0], rc[1])]
+		if exists {
+			idNumbers[id] = pn.idNumberMap[id]
+		}
+	}
+
+	result := make([]int, 0, len(idNumbers))
+	for _, v := range idNumbers {
+		result = append(result, v)
+	}
+	return result
+}
+
+// getSurroundingCells returns coordinates for surrounding cells.
+func getSurroundingCells(row, col int) [][]int {
+	return [][]int{
+		{row - 1, col}, {row - 1, col + 1},
+		{row, col + 1}, {row + 1, col + 1},
+		{row + 1, col}, {row + 1, col - 1},
+		{row, col - 1}, {row - 1, col - 1},
+	}
+}
+
+// Struct to represent the part numbers and their relations in the grid.
+type partNumbers struct {
+	schematic      []string
+	indexIdMap     map[string]int
+	idNumberMap    map[int]int
+	asteriskRowCol []string
 }
