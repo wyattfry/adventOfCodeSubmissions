@@ -1,11 +1,11 @@
 package main
 
 import (
-	"aoc/template/day01"
-	"aoc/template/day02"
+	templateday01 "aoc/template/day01"
+	templateday02 "aoc/template/day02"
 )
 
 func main() {
-	day01.Solve()
-	day02.Solve()
+	templateday01.Solve()
+	templateday02.Solve()
 }
