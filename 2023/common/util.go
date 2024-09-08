@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"runtime"
 )
 
 func Readlines(fileName string) []string {
@@ -22,4 +23,11 @@ func Readlines(fileName string) []string {
 	}
 
 	return output
+}
+
+func GetEnvNewline() string {
+	if runtime.GOOS == "windows" {
+		return "\r\n"
+	}
+	return "\n"
 }
