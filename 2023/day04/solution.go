@@ -66,5 +66,17 @@ func parseLine(line string) scratchcard {
 }
 
 func calculatePart2(lines []string) int {
-	return -1
+	var cardSum int
+	cardCounts := make([]int, len(lines))
+	for i := range cardCounts {
+		cardCounts[i] = 1
+	}
+	for index, line := range lines {
+		cardSum += cardCounts[index]
+		card := parseLine(line)
+		for i := 0; i < getWinnerCount(card); i++ {
+			cardCounts[index+1+i] += cardCounts[index]
+		}
+	}
+	return cardSum
 }

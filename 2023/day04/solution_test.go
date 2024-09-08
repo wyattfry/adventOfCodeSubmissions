@@ -49,3 +49,11 @@ func Test_getWinnerCount(t *testing.T) {
 		t.Error("getWinnerCount() =", result, " but wanted 2")
 	}
 }
+
+func Test_calculatePart2(t *testing.T) {
+	result := calculatePart2(example)
+	want := 30
+	if result != want {
+		t.Error("calculatePart2() =", result, "but wanted", want)
+	}
+}
