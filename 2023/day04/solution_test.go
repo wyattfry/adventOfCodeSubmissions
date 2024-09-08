@@ -52,7 +52,7 @@ func Test_getWinnerCount(t *testing.T) {
 
 func Test_calculatePart2(t *testing.T) {
 	result := calculatePart2(example)
-	want := 31 // breaking test to see what action does
+	want := 30
 	if result != want {
 		t.Error("calculatePart2() =", result, "but wanted", want)
 	}
