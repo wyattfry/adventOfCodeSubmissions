@@ -25,7 +25,7 @@ jobs:
 
       # Change to the directory containing the Go module
       - name: Change to Go module directory
-        run: cd 2023
+        run: cd 2023; pwd; ls -la
 
       # Install dependencies
       - name: Install dependencies
