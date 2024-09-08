@@ -10,6 +10,7 @@ on:
 
 jobs:
   test:
+    name: Go Unit Tests
     runs-on: ubuntu-latest
 
     steps:
