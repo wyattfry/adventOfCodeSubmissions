@@ -23,20 +23,19 @@ jobs:
         with:
           go-version: "1.21" # Specify the version of Go to use. Adjust as needed.
 
-      # Change to the directory containing the Go module
-      - name: Change to Go module directory
-        run: cd 2023; pwd; ls -la
-
       # Install dependencies
       - name: Install dependencies
+        working-directory: ./2023
         run: pwd; go mod tidy
 
       # Run tests
       - name: Run tests
+        working-directory: ./2023
         run: go test ./... -v
 
       # Optional: Collect test coverage (if desired)
       - name: Run tests with coverage
+        working-directory: ./2023
         run: go test ./... -coverprofile=coverage.out
 
       # Upload test coverage results (if using coverage)
