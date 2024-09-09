@@ -11,7 +11,7 @@ Solution Part 1: 53974 (File: ./day01/input.txt)
 Solution Part 2: 52840 (File: ./day01/input.txt)
 ```
 
-There are unit tests that run in a Github Action, or can be manually run like this:
+There are unit tests that run in a GitHub Action, or can be manually run like this:
 
 ```
 $ cd adventOfCodeSubmissions/2023
@@ -20,9 +20,6 @@ $ go test ./...
 ok      aoc/common      (cached)
 ok      aoc/day01       (cached)
 ok      aoc/day02       (cached)
-?       aoc/template    [no test files]
-?       aoc/template/day01      [no test files]
-?       aoc/template/day02      [no test files]
 ok      aoc/day03       (cached)
 ok      aoc/day04       (cached)
 ok      aoc/day05       0.238s
