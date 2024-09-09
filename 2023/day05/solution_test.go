@@ -64,10 +64,11 @@ func Test_parseInput(t *testing.T) {
 
 func Test_convertSeedToLocation(t *testing.T) {
 	testCases := map[int]int{
-		79: 82,
-		// 14: 43,
-		// 55: 86,
-		// 13: 35,
+		79:  82,
+		14:  43,
+		55:  86,
+		13:  35,
+		100: 100, // exposed off-by-one bug
 	}
 	_, srcDstMaps := parseInput(example)
 	for input, expect := range testCases {

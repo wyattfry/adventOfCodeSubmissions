@@ -12,6 +12,9 @@ jobs:
   test:
     name: Go Unit Tests
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./2023
 
     steps:
       # Checkout the code from the repository
@@ -26,17 +29,14 @@ jobs:
 
       # Install dependencies
       - name: Install dependencies
-        working-directory: ./2023
         run: pwd; go mod tidy
 
       # Run tests
       - name: Run tests
-        working-directory: ./2023
         run: go test ./... -v
 
       # Optional: Collect test coverage (if desired)
       - name: Run tests with coverage
-        working-directory: ./2023
         run: go test ./... -coverprofile=coverage.out
 
       # Upload test coverage results (if using coverage)

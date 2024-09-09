@@ -4,7 +4,6 @@ import (
 	"aoc/common"
 	"fmt"
 	"strings"
-	"sync"
 
 	"github.com/schollz/progressbar/v3"
 )
@@ -21,16 +20,15 @@ func Solve(file string) {
 }
 
 func calculatePart1(lines []string) int {
-	lowestLocation := new(int)
-	*lowestLocation = 9999999999999
+	lowestLocation := 9999999999999
 
 	seedNumbers, srcDstMaps := parseInput(lines)
 
 	for _, seedNum := range seedNumbers {
-		convertSeedToLocation(seedNum, srcDstMaps, lowestLocation)
+		convertSeedToLocation(seedNum, srcDstMaps, &lowestLocation)
 	}
 
-	return *lowestLocation
+	return lowestLocation
 }
 
 type conversionRule struct {
@@ -76,7 +74,7 @@ func convertSeedToLocation(seedNumber int, sourceDestionationMaps [][]conversion
 	currentNumber := seedNumber
 	for _, srcDstMap := range sourceDestionationMaps {
 		for _, rule := range srcDstMap {
-			if currentNumber >= rule.sourceRangeStart && currentNumber <= rule.sourceRangeStart+rule.rangeLength {
+			if currentNumber >= rule.sourceRangeStart && currentNumber < rule.sourceRangeStart+rule.rangeLength {
 				currentNumber += rule.destRangeStart - rule.sourceRangeStart
 				break
 			}
@@ -87,11 +85,13 @@ func convertSeedToLocation(seedNumber int, sourceDestionationMaps [][]conversion
 	}
 }
 
-func convertSeedToLocationAsync(wg *sync.WaitGroup, seedNumber int, sourceDestionationMaps [][]conversionRule, lowestLocation *int, bar *progressbar.ProgressBar) {
-	convertSeedToLocation(seedNumber, sourceDestionationMaps, lowestLocation)
-	bar.Add(1)
-	wg.Done()
-}
+// I thought parallelization would make the solution run faster, but it didn't.
+// The sync version took about two minutes, this was estimating over an hour.
+// func convertSeedToLocationAsync(wg *sync.WaitGroup, seedNumber int, sourceDestionationMaps [][]conversionRule, lowestLocation *int, bar *progressbar.ProgressBar) {
+// 	convertSeedToLocation(seedNumber, sourceDestionationMaps, lowestLocation)
+// 	bar.Add(1)
+// 	wg.Done()
+// }
 
 // Part 2: the `seeds:` line no longer is a list of seedNumbers, but rather
 // seed ranges. 12 6 = starts at 12, range is 6, 12 to 17
@@ -120,6 +120,8 @@ func calculatePart2(lines []string) int {
 		startingSeedNumber := seedNumbers[index-1]
 		seedNumberRange := seedNum
 
+		// fmt.Println("Seed -> Location from", startingSeedNumber, "to", startingSeedNumber+seedNumberRange-1)
+
 		for i := startingSeedNumber; i < startingSeedNumber+seedNumberRange; i += 1 {
 			// wg.Add(1)
 			// convertSeedToLocationAsync(wg, i, srcDstMaps, &lowestLocation, bar)
@@ -131,8 +133,3 @@ func calculatePart2(lines []string) int {
 
 	return lowestLocation
 }
-
-// func someFunc(wg *sync.WaitGroup) {
-// 	// do some logic
-// 	wg.Done()
-// }
