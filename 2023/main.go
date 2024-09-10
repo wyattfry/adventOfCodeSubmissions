@@ -6,11 +6,15 @@ import (
 	"aoc/day03"
 	"aoc/day04"
 	"aoc/day05"
+	"aoc/day06"
 	"fmt"
 	"os"
 )
 
 func main() {
+	if len(os.Args) != 2 {
+		fmt.Println("Please specify a day")
+	}
 	a := os.Args[1]
 	if a == "1" {
 		day01.Solve("./day01/input.txt")
@@ -22,8 +26,8 @@ func main() {
 		day04.Solve("./day04/input.txt")
 	} else if a == "5" {
 		day05.Solve("./day05/input.txt")
-	} else {
-		fmt.Println("Please specify a day")
+	} else if a == "6" {
+		day06.Solve("./day06/input.txt")
 	}
 
 }
