@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"regexp"
-	"runtime"
 	"strconv"
 )
 
@@ -27,17 +26,13 @@ func Readlines(fileName string) []string {
 	return output
 }
 
-func GetEnvNewline() string {
-	if runtime.GOOS == "windows" {
-		return "\r\n"
-	}
-	return "\n"
-}
-
 func ExtractInts(strWithInts string) []int {
 	var output []int
 	for _, numstr := range regexp.MustCompile(`\d+`).FindAllString(strWithInts, -1) {
-		num, _ := strconv.Atoi(numstr)
+		num, err := strconv.Atoi(numstr)
+		if err != nil {
+			panic(err)
+		}
 		output = append(output, num)
 	}
 

@@ -7,27 +7,36 @@ import (
 	"aoc/day04"
 	"aoc/day05"
 	"aoc/day06"
+	"aoc/day07"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 func main() {
 	if len(os.Args) != 2 {
-		fmt.Println("Please specify a day")
-	}
-	a := os.Args[1]
-	if a == "1" {
-		day01.Solve("./day01/input.txt")
-	} else if a == "2" {
-		day02.Solve("./day02/input.txt")
-	} else if a == "3" {
-		day03.Solve("./day03/input.txt")
-	} else if a == "4" {
-		day04.Solve("./day04/input.txt")
-	} else if a == "5" {
-		day05.Solve("./day05/input.txt")
-	} else if a == "6" {
-		day06.Solve("./day06/input.txt")
+		os.Stderr.WriteString("Please specify a day\n")
+		os.Exit(1)
 	}
 
+	i, err := strconv.Atoi(os.Args[1])
+
+	if err != nil {
+		os.Stderr.WriteString("Day must be expressed as a digit from 1 to 25\n")
+		os.Exit(1)
+	}
+
+	inputFile := fmt.Sprintf("./day%02d/input.txt", i)
+
+	f := []func(fileName string){
+		day01.Solve,
+		day02.Solve,
+		day03.Solve,
+		day04.Solve,
+		day05.Solve,
+		day06.Solve,
+		day07.Solve,
+	}
+
+	f[i-1](inputFile)
 }
