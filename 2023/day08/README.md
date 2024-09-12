@@ -4,6 +4,8 @@ Graph traversal!
 
 ## Part 1
 
+I suppose I could solve this part just with a `map[string][]string` but I wanted more experience with pointers because I am still guessing when I need a `*` versus an `&`.
 
 ## Part 2
 
+WIP
