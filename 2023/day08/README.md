@@ -8,4 +8,4 @@ I suppose I could solve this part just with a `map[string][]string` but I wanted
 
 ## Part 2
 
-WIP
+My algo got to step 6,442,450,958 and counting. I may need a new approach.
