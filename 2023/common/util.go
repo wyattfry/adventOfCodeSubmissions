@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"reflect"
 	"regexp"
 	"strconv"
+	"testing"
 )
 
 func Readlines(fileName string) []string {
@@ -28,7 +30,7 @@ func Readlines(fileName string) []string {
 
 func ExtractInts(strWithInts string) []int {
 	var output []int
-	for _, numstr := range regexp.MustCompile(`\d+`).FindAllString(strWithInts, -1) {
+	for _, numstr := range regexp.MustCompile(`-?\d+`).FindAllString(strWithInts, -1) {
 		num, err := strconv.Atoi(numstr)
 		if err != nil {
 			panic(err)
@@ -37,4 +39,10 @@ func ExtractInts(strWithInts string) []int {
 	}
 
 	return output
+}
+
+func AssertEqual[T int | []int | [][]int | string | []string](want T, got T, t *testing.T) {
+	if !reflect.DeepEqual(want, got) {
+		t.Errorf(`Got %#v, but wanted %#v`, want, got)
+	}
 }

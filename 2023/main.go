@@ -9,6 +9,7 @@ import (
 	"aoc/day06"
 	"aoc/day07"
 	"aoc/day08"
+	"aoc/day09"
 	"fmt"
 	"os"
 	"strconv"
@@ -38,6 +39,7 @@ func main() {
 		day06.Solve,
 		day07.Solve,
 		day08.Solve,
+		day09.Solve,
 	}
 
 	f[i-1](inputFile)
