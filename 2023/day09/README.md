@@ -15,4 +15,4 @@ Yup, got the answer after debugging a few little mistakes. Highlights:
 
 ## Part 2
 
-TBD
+Wow, I was bracing for something strenuous but my solution took very little adaption for Part 2.

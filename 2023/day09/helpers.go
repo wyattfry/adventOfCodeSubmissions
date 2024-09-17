@@ -16,6 +16,22 @@ func extrapolate(sequence []int) int {
 	return diffs[0][len(diffs[0])-1]
 }
 
+// Takes a sequence of ints and returns the int before the first in the sequence
+func extrapolatePrev(sequence []int) int {
+	diffs := [][]int{
+		sequence,
+	}
+	diffs = append(diffs, calcDifferencesRecurse(sequence)...)
+	for i := len(diffs) - 1; i > 0; i-- {
+		currentRow := diffs[i]
+		nextRow := diffs[i-1]
+		currentRowFirstNumber := currentRow[0]
+		nextRowFirstNumber := nextRow[0]
+		diffs[i-1] = append([]int{nextRowFirstNumber - currentRowFirstNumber}, nextRow...)
+	}
+	return diffs[0][0]
+}
+
 // Returns a new array, consisting of the amount by which the numbers in the
 // input array increase. E.g. [2,4,6] -> [2,2]
 func calcDifferences(sequence []int) []int {

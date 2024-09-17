@@ -27,7 +27,13 @@ func calculatePart1(lines []string) int {
 }
 
 func calculatePart2(lines []string) int {
-	return -1
+	var extrapolatedPrevValueSum int
+
+	for sequence := range parseInput(lines) {
+		extrapolatedPrevValueSum += extrapolatePrev(sequence)
+	}
+
+	return extrapolatedPrevValueSum
 }
 
 func parseInput(lines []string) iter.Seq[[]int] {

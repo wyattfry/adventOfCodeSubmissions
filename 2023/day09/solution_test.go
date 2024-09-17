@@ -9,6 +9,7 @@ import (
 type testCase struct {
 	line                  string
 	extrapolatedNextValue int
+	extrapolatedPrevValue int
 	sequence              []int
 }
 
@@ -17,16 +18,19 @@ var (
 		{
 			line:                  "0   3   6   9  12  15",
 			extrapolatedNextValue: 18,
+			extrapolatedPrevValue: -3,
 			sequence:              []int{0, 3, 6, 9, 12, 15},
 		},
 		{
 			line:                  "1   3   6  10  15  21",
 			extrapolatedNextValue: 28,
+			extrapolatedPrevValue: 0,
 			sequence:              []int{1, 3, 6, 10, 15, 21},
 		},
 		{
 			line:                  "10  13  16  21  30  45",
 			extrapolatedNextValue: 68,
+			extrapolatedPrevValue: 5,
 			sequence:              []int{10, 13, 16, 21, 30, 45},
 		},
 	}
@@ -100,12 +104,20 @@ func Test_extrapolate(t *testing.T) {
 	}
 }
 
-// func Test_calculatePart2(t *testing.T) {
-// 	for _, tc := range exampleCasesPart2 {
+func Test_extrapolatePrev(t *testing.T) {
+	for _, tc := range exampleCases {
+		got := extrapolatePrev(tc.sequence)
 
-// 		result := calculatePart2(tc.lines)
-// 		if result != tc.solution {
-// 			t.Error("f() =", result, "but wanted", tc.solution)
-// 		}
-// 	}
-// }
+		common.AssertEqual(tc.extrapolatedPrevValue, got, t)
+	}
+}
+
+func Test_calculatePart2(t *testing.T) {
+	lines := []string{}
+	for _, ec := range exampleCases {
+		lines = append(lines, ec.line)
+	}
+	want := 2
+	got := calculatePart2(lines)
+	common.AssertEqual(want, got, t)
+}
