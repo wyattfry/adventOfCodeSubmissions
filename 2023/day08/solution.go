@@ -15,7 +15,7 @@ func Solve(file string) {
 	part1Result := calculatePart1(lines)
 	fmt.Println("Solution for part 1:", part1Result, file)
 
-	part2Result := calculatePart2(lines, true)
+	part2Result := calculatePart2(lines)
 	fmt.Println("Solution for part 2:", part2Result, file)
 	// answer > 9,999,999
 }
@@ -39,30 +39,39 @@ func getStartingNodes(networkMap map[string]*node) []node {
 	return startingNodes
 }
 
-type checkpoint struct {
-	Step  int
-	State []string
+// Greatest Common Divisor via Euclidian Algorithm
+func GCD(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
 }
 
-func calculatePart2(lines []string, useCheckpoints bool) int {
+// Least Common Multiple via GCD
+func LCM(a, b int, integers ...int) int {
+	result := a * b / GCD(a, b)
+	for i := 0; i < len(integers); i++ {
+		result = LCM(result, integers[i])
+	}
+	return result
+}
+
+func calculatePart2(lines []string) int {
 	instructions, networkMap := parseInput(lines)
+	firstZSteps := []int{}
 	for nodeName, pnode := range networkMap {
 		if strings.HasSuffix(nodeName, "A") {
-			fmt.Printf("Starting at %s\n", nodeName)
-			var lastStep int
 			for step, n := range traverseGraphIter(*pnode, instructions) {
-				if step > 999999 {
-					break
-				}
 				if strings.HasSuffix(n.name, "Z") {
-					fmt.Printf("Step %d, diff: %d  Node %s\n", step, step-lastStep, n.name)
-					lastStep = step
+					firstZSteps = append(firstZSteps, step)
 					break
 				}
 			}
 		}
 	}
-	return -1
+	return LCM(firstZSteps[0], firstZSteps[1], firstZSteps...)
 }
 
 type node struct {

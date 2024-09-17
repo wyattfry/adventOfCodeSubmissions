@@ -57,4 +57,26 @@ We are trying to find how many steps it takes for all ghosts to be on a node tha
 | NJA        | HRZ    | 19099                  |
 | KJA        | KRZ    | 19637                  |
 
-So I would guess the answer is the least common multiple of all the numbers in the left column, no?
+So I would guess the answer is the least common multiple of all the numbers in the left column, no? I found an [implementation of LCD](https://siongui.github.io/2017/06/03/go-find-lcm-by-gcd/) in Go. I'd like to understand it.
+
+$a, b ∈ ℕ, a*b = LCM(a, b)*GCD(a, b)$
+
+On the other hand, I didn't write my own sort algorithm in a previous day. Anyway, I'll run through it with the example data.
+
+|              | a   | b         | t   |
+| ------------ | --- | --------- | --- |
+| First Z      | 2   | 3         |     |
+| GCD(a,b)     |     |           | 3   |
+|              |     | 2 % 3 = 2 |     |
+|              | 3   |           |     |
+|              |     | 2 != 0    |     |
+|              |     |           | 2   |
+|              | 2   | 3 % 2 = 1 |     |
+|              |     | 2 != 0    |     |
+|              | 1   | 2 % 1 = 0 | 1   |
+|              |     | 2 == 0    |     |
+| a*b/GCD(a,b) |     |           |     |
+| 2*3/1        |     |           |     |
+| 6            |     |           |     |
+
+Yup, that worked. All credit goes to [Siong-Ui Te](https://github.com/siongui)

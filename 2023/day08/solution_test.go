@@ -1,7 +1,6 @@
 package day08
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 )
@@ -95,8 +94,7 @@ func Test_calculatePart1(t *testing.T) {
 
 func Test_traverseGraphIter(t *testing.T) {
 	instructions, networkMap := parseInput(exampleCases[0].lines)
-	for n := range traverseGraphIter(*networkMap["AAA"], instructions, 0) {
-		fmt.Println(n.name)
+	for _, n := range traverseGraphIter(*networkMap["AAA"], instructions) {
 		if n.name == "ZZZ" {
 			break
 		}
@@ -106,7 +104,7 @@ func Test_traverseGraphIter(t *testing.T) {
 func Test_calculatePart2(t *testing.T) {
 	for _, tc := range exampleCasesPart2 {
 
-		result := calculatePart2(tc.lines, false)
+		result := calculatePart2(tc.lines)
 		if result != tc.solution {
 			t.Error("f() =", result, "but wanted", tc.solution)
 		}
