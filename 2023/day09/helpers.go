@@ -16,6 +16,8 @@ func extrapolate(sequence []int) int {
 	return diffs[0][len(diffs[0])-1]
 }
 
+// Returns a new array, consisting of the amount by which the numbers in the
+// input array increase. E.g. [2,4,6] -> [2,2]
 func calcDifferences(sequence []int) []int {
 	var diffs []int
 	for i, s := range sequence {
