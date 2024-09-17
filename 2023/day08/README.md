@@ -42,29 +42,19 @@ There would be two ghosts, one starting on `11A`, the other on `22A`. They would
 | 5    | 11B     | 22C     |
 | 6    | **11Z** | **22Z** |
 
-We are trying to find how many steps it takes for all ghosts to be on a node that ends with `Z`. The answer here would be `6`. The answer is probably going to be in or around the trillions, so we have to solve the problem mathematically. Maybe a formula for each ghost? e.g. ghost 1 is on a `Z` like this: $y = 2x_1$ and ghost 2: $y = 3x_2$ where $x_n$ is the sequence of `Z` nodes and $y$ is the step on which that `Z` falls. So if we want to find where both ghosts are on a `Z`,
+We are trying to find how many steps it takes for all ghosts to be on a node that ends with `Z`. The answer here would be `6`. The answer is probably going to be in or around the trillions, so we have to solve the problem mathematically. I wrote some code just to show the nature of the data, looks like it's not as bad as it could be:
 
-$$2x_1 = 3x_2$$
+* There are six ghosts (i.e. six nodes that end with `A`)
+* Amongst the nodes they cross, each only crosses one `Z` node
+* They always cross their `Z` node at the same interval, which is also the step number on which they first cross their `Z` node
 
-$$\frac{x_1}{x_2}= \frac{3}{2}$$
+| Start Node | Z Node | Step of First Crossing |
+| ---------- | ------ | ---------------------- |
+| TTA        | KHZ    | 15871                  |
+| LTA        | DXZ    | 21251                  |
+| BGA        | HSZ    | 12643                  |
+| AAA        | ZZZ    | 14257                  |
+| NJA        | HRZ    | 19099                  |
+| KJA        | KRZ    | 19637                  |
 
-$$x_1 = 2$$
-
-$$y=2*3=6$$
-
-
-LCM of 10 15
-
-$5*2=10$
-
-$3*5=15$
-
-$5 * 2 * 3 = 30$
-
-24, 30
-
-$12*2=2*2*2*3$
-
-$15*2=2*3*5$
-
-$2*2*2*3*5=24*5=120$
+So I would guess the answer is the least common multiple of all the numbers in the left column, no?
