@@ -34,7 +34,11 @@ So let's assume the starting tile `S` has been replaced with ground, and we are 
 1. Next tile is found, store current location in a temporary var, change current location to new tile, overwrite old tile with ground
 1. Return to step 1
 
-...it worked! At first I didn't get the right answer. I checked my `input.txt` and noticed there were two `S` tiles, while the description implied that there would only be one. I made an HTML visualization of the loop that is fun to watch, and both loops were fairly small. I tried re-copying the input from the AoC website, it was very different. It had only one `S`, and the loop was this giant doughnut that took up most of the grid. I have no idea where I got that first input. But once I got the right input, I got the right answer.
+...it worked! At first I didn't get the right answer. I checked my `input.txt` and noticed there were two `S` tiles, while the description implied that there would only be one. I made an HTML visualization of the loop that is fun to watch, and both loops were fairly small. I tried re-copying the input from the AoC website, it was very different. It had only one `S`, and the loop was this giant doughnut that took up most of the grid. 
+
+![Giant Doughnut Visualization](image.png)
+
+I have no idea where I got that first input. But once I got the right input, I got the right answer.
 
 ## Part 2
 
