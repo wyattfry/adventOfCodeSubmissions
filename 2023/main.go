@@ -10,6 +10,7 @@ import (
 	"aoc/day07"
 	"aoc/day08"
 	"aoc/day09"
+	"aoc/day10"
 	"fmt"
 	"os"
 	"strconv"
@@ -40,6 +41,12 @@ func main() {
 		day07.Solve,
 		day08.Solve,
 		day09.Solve,
+		day10.Solve,
+	}
+
+	if len(f) < i {
+		os.Stderr.WriteString(fmt.Sprintf("Day must be expressed as a digit from 1 to %d\n", i-1))
+		os.Exit(1)
 	}
 
 	f[i-1](inputFile)
