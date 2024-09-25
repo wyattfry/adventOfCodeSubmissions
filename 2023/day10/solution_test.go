@@ -2,6 +2,7 @@ package day10
 
 import (
 	"aoc/common"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -166,4 +167,23 @@ LJ...`, "\n"),
 		got := calculatePart1(tc.lines)
 		common.AssertEqual(tc.want, got, t)
 	}
+}
+
+func Test_parse(t *testing.T) {
+	var input = strings.Split(`.....
+.....
+..F-7
+..|.|
+..S-J`, "\n")
+	result := parseInput(input)
+	path := result[string(START_TILE)].traceLoop()
+	for _, t := range path {
+		fmt.Println(t.loc.col, t.loc.row)
+	}
+	area := calculateAreaShoelace(path)
+	fmt.Println("Area", area)
+
+	interiorPointCount := calculateInteriorPointsPicks(area, len(path))
+
+	fmt.Println("Interior Points:", interiorPointCount)
 }

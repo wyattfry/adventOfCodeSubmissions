@@ -19,8 +19,10 @@ func Solve(file string) {
 }
 
 func calculatePart1(lines []string) int {
+	tmp := make([]string, len(lines))
+	copy(tmp, lines)
 	ps := pipeSystem{
-		system: lines,
+		system: tmp,
 	}
 	d1 := []byte(ps.toHtml())
 	os.WriteFile("day10/day10.html", d1, 0644)
@@ -30,5 +32,9 @@ func calculatePart1(lines []string) int {
 }
 
 func calculatePart2(lines []string) int {
-	return -1
+	tiles := parseInput(lines)
+	path := tiles[string(START_TILE)].traceLoop()
+	area := calculateAreaShoelace(path)
+	interiorPointCount := calculateInteriorPointsPicks(area, len(path))
+	return interiorPointCount
 }
