@@ -22,3 +22,18 @@ func calculatePart1(lines []string) int {
 func calculatePart2(lines []string) int {
 	return -1
 }
+
+func parseInput(lines []string) []galaxy {
+	var galaxies []galaxy
+	for rowIdx, row := range lines {
+		for colIdx, col := range row {
+			if col == GALAXY_RUNE {
+				galaxies = append(galaxies, galaxy{
+					row: rowIdx,
+					col: colIdx,
+				})
+			}
+		}
+	}
+	return galaxies
+}
