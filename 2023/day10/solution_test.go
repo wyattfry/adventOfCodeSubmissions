@@ -2,7 +2,6 @@ package day10
 
 import (
 	"aoc/common"
-	"fmt"
 	"strings"
 	"testing"
 )
@@ -177,13 +176,8 @@ func Test_parse(t *testing.T) {
 ..S-J`, "\n")
 	result := parseInput(input)
 	path := result[string(START_TILE)].traceLoop()
-	for _, t := range path {
-		fmt.Println(t.loc.col, t.loc.row)
-	}
 	area := calculateAreaShoelace(path)
-	fmt.Println("Area", area)
-
 	interiorPointCount := calculateInteriorPointsPicks(area, len(path))
-
-	fmt.Println("Interior Points:", interiorPointCount)
+	common.AssertEqual(4, area, t)
+	common.AssertEqual(1, interiorPointCount, t)
 }

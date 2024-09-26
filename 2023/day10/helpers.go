@@ -133,7 +133,6 @@ func (s *pipeSystem) calcLoopLength(row, col int) int {
 					break
 				}
 			}
-			fmt.Println("Start tile type:", s.startTileType)
 		}
 		for _, r := range connections[currentTile] {
 			if s.canGo(row, col, string(r)) {
@@ -223,15 +222,12 @@ func parseInput(lines []string) map[string]*tile {
 				tileType: string(col),
 			}
 			tiles[fmt.Sprintf("%d,%d", rowIdx, colIdx)] = &currentTile
-			if rowIdx == 50 && colIdx == 40 {
-				fmt.Println(currentTile)
-			}
+
 			// Make start tile easy to find
 			if col == START_TILE {
 				currentTile.isPartOfLoop = true
 				tiles[string(START_TILE)] = &currentTile
 				currentTile.tileType = inferType(currentTile.loc, lines)
-				fmt.Println("DEBUG:     Setting dict entry for start tile")
 			}
 
 			north, ok := tiles[fmt.Sprintf("%d,%d", rowIdx-1, colIdx+0)]
@@ -269,7 +265,6 @@ func (t *tile) traceLoop() []*tile {
 	for i := 0; true; i++ {
 		var moved bool
 		pathAsSlice = append(pathAsSlice, t)
-		fmt.Println("$$$$$$$$$ Tile:", t)
 		for _, r := range connections[t.tileType] {
 			neighbor := t.getNeighbor(r)
 			if neighbor != nil && !neighbor.isPartOfLoop {
