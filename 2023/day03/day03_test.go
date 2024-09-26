@@ -1,6 +1,8 @@
 package day03
 
 import (
+	"aoc/common"
+	"slices"
 	"testing"
 )
 
@@ -113,10 +115,10 @@ func TestGetAdjacentNumbers(t *testing.T) {
 		"..5."}
 	pn := makePartNumbers(schematic)
 	adjacentNumbers := getAdjacentNumbers(pn, 0, 2)
+	slices.Sort(adjacentNumbers)
+	want := []int{12, 34}
 
-	if len(adjacentNumbers) != 2 || adjacentNumbers[0] != 12 || adjacentNumbers[1] != 34 {
-		t.Errorf("Expected adjacent numbers [12, 34], got %v", adjacentNumbers)
-	}
+	common.AssertEqual(want, adjacentNumbers, t)
 }
 
 // TestIsSpecialSymbolAt tests the identification of special symbols in the schematic.
