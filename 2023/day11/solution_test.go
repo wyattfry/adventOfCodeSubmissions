@@ -112,10 +112,7 @@ func Test_expandByPart2(t *testing.T) {
 	} {
 		sut := parseInput(example)
 		sut.expandBy(tc.expandAmount)
-		var got int
-		for _, dist := range sut.getAllDistances() {
-			got += dist
-		}
+		got := common.Sum(sut.getAllDistances())
 		common.AssertEqual(tc.want, got, t)
 	}
 }

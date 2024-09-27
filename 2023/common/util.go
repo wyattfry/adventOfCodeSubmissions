@@ -46,3 +46,11 @@ func AssertEqual(want any, got any, t *testing.T) {
 		t.Errorf(`Got %#v, but wanted %#v`, got, want)
 	}
 }
+
+func Sum(nums []int) int {
+	var sum int
+	for _, num := range nums {
+		sum += num
+	}
+	return sum
+}
