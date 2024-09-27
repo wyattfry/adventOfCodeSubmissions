@@ -41,7 +41,7 @@ func ExtractInts(strWithInts string) []int {
 	return output
 }
 
-func AssertEqual[T bool | int | []int | [][]int | string | []string](want T, got T, t *testing.T) {
+func AssertEqual(want any, got any, t *testing.T) {
 	if !reflect.DeepEqual(want, got) {
 		t.Errorf(`Got %#v, but wanted %#v`, got, want)
 	}

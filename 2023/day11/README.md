@@ -67,5 +67,43 @@ It might be even better to represent the data as a 2D int slice, where the outer
 
 Maybe it's not worth the trouble.
 
+---
+
+I was thinking about storing the data in one shape, then accessing it in another.
+
+I was thinking a map[row][]col... and while that's great for finding which rows are not occupied, it's a pain to find columns.
+
+Here's the next idea, use two structures. Modify the map to this:
+
+```
+map[int]map[int]int{
+  row_0: {
+    col_0: id_0
+  },
+  row_3: {
+    col_2: id_1
+  },
+  row_4: {
+    col_5: id_2
+  }
+}
+```
+
+Where these rows and columns are the original locations, then have a second structure:
+
+```
+map[int]location{
+  id_0: {row_0, col_0},
+  id_1: {row_3, col_2},
+  id_1: {row_4, col_5},
+}
+```
+
+...but I'd need two `map[int]map[int]int`s, one with columns first, the other with rows first. That's a lot of memory.
+
+What if we declare an int variable for each row and column to store the number of galaxies in each. Then we iterate over the input, incrementing the count as we go, and keep that `id: location` map. That might work.
+
+Hmm. Not quite. Ok, instead of just counts, it's a slice of galaxy IDs.
+
 ## Part 2
 

@@ -23,17 +23,17 @@ func calculatePart2(lines []string) int {
 	return -1
 }
 
-func parseInput(lines []string) []galaxy {
-	var galaxies []galaxy
+func parseInput(lines []string) galaxyCluster {
+	gc := galaxyCluster{}
 	for rowIdx, row := range lines {
 		for colIdx, col := range row {
 			if col == GALAXY_RUNE {
-				galaxies = append(galaxies, galaxy{
+				gc.addGalaxy(location{
 					row: rowIdx,
 					col: colIdx,
 				})
 			}
 		}
 	}
-	return galaxies
+	return gc
 }
