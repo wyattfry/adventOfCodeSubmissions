@@ -11,6 +11,7 @@ import (
 	"aoc/day08"
 	"aoc/day09"
 	"aoc/day10"
+	"aoc/day11"
 	"fmt"
 	"os"
 	"strconv"
@@ -25,7 +26,7 @@ func main() {
 	i, err := strconv.Atoi(os.Args[1])
 
 	if err != nil {
-		os.Stderr.WriteString("Day must be expressed as a digit from 1 to 25\n")
+		os.Stderr.WriteString("Day must be expressed as a integer\n")
 		os.Exit(1)
 	}
 
@@ -42,10 +43,11 @@ func main() {
 		day08.Solve,
 		day09.Solve,
 		day10.Solve,
+		day11.Solve,
 	}
 
 	if len(f) < i {
-		os.Stderr.WriteString(fmt.Sprintf("Day must be expressed as a digit from 1 to %d\n", i-1))
+		os.Stderr.WriteString(fmt.Sprintf("Day must be expressed as a integer from 1 to %d\n", i-1))
 		os.Exit(1)
 	}
 

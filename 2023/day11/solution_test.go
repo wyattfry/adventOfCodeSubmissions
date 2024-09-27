@@ -6,6 +6,19 @@ import (
 	"testing"
 )
 
+var (
+	example = strings.Split(`...#......
+.......#..
+#.........
+..........
+......#...
+.#........
+.........#
+..........
+.......#..
+#...#.....`, "\n")
+)
+
 func Test_addGalaxy(t *testing.T) {
 	sut := galaxyCluster{}
 	sut.addGalaxy(location{
@@ -48,7 +61,7 @@ func Test_expand(t *testing.T) {
 ...
 #..
 ..#`, "\n"))
-	sut.expand()
+	sut.expandBy(1)
 	result := sut.idToLocation
 	want := map[int]location{
 		0: {0, 0},
@@ -74,5 +87,35 @@ func Test_getDistanceBetweenGalaxies(t *testing.T) {
 		got2 := sut.getDistanceBetweenGalaxies(tc[1], tc[0])
 		common.AssertEqual(tc[2], got1, t)
 		common.AssertEqual(tc[2], got2, t)
+	}
+}
+
+func Test_calcPart1(t *testing.T) {
+	got := calculatePart1(example)
+	want := 374
+	common.AssertEqual(want, got, t)
+}
+
+func Test_expandByPart2(t *testing.T) {
+	for _, tc := range []struct {
+		expandAmount, want int
+	}{
+		{
+			expandAmount: 10 - 1,
+			want:         1030,
+		},
+
+		{
+			expandAmount: 100 - 1,
+			want:         8410,
+		},
+	} {
+		sut := parseInput(example)
+		sut.expandBy(tc.expandAmount)
+		var got int
+		for _, dist := range sut.getAllDistances() {
+			got += dist
+		}
+		common.AssertEqual(tc.want, got, t)
 	}
 }

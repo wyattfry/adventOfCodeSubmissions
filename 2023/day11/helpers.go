@@ -15,59 +15,68 @@ type location struct {
 }
 
 func (g *galaxyCluster) addGalaxy(loc location) {
+	// Initialize maps if needed
 	if g.colGalaxyIDs == nil {
 		g.colGalaxyIDs = make(map[int][]int)
 	}
-	g.colGalaxyIDs[loc.col] = append(g.colGalaxyIDs[loc.col], g.highestID)
-
 	if g.rowGalaxyIDs == nil {
 		g.rowGalaxyIDs = make(map[int][]int)
 	}
-	g.rowGalaxyIDs[loc.row] = append(g.rowGalaxyIDs[loc.row], g.highestID)
-
 	if g.idToLocation == nil {
 		g.idToLocation = make(map[int]location)
 	}
+
+	// Add galaxy ID to row and column maps
+	addToMap := func(m map[int][]int, key, id int) {
+		m[key] = append(m[key], id)
+	}
+	addToMap(g.colGalaxyIDs, loc.col, g.highestID)
+	addToMap(g.rowGalaxyIDs, loc.row, g.highestID)
+
+	// Update location and highest ID
 	g.idToLocation[g.highestID] = loc
 	g.highestID++
 
+	// Update highest column and row
 	if loc.col > g.highestCol {
 		g.highestCol = loc.col
 	}
-
 	if loc.row > g.highestRow {
 		g.highestRow = loc.row
 	}
 }
 
-func (g *galaxyCluster) expand() {
-	for i := 0; i < g.highestRow; i++ {
-		_, ok := g.rowGalaxyIDs[i]
-		if !ok {
-			// row i is empty
-			for rowIdx, IDs := range g.rowGalaxyIDs {
-				if rowIdx > i {
-					for _, id := range IDs {
-						g.idToLocation[id] = location{
-							row: g.idToLocation[id].row + 1,
-							col: g.idToLocation[id].col,
-						}
-					}
-				}
-			}
-		}
-	}
-
-	for i := 0; i < g.highestCol; i++ {
-		_, ok := g.colGalaxyIDs[i]
-		if !ok {
-			// col i is empty
-			for colIdx, IDs := range g.colGalaxyIDs {
-				if colIdx > i {
-					for _, id := range IDs {
-						g.idToLocation[id] = location{
-							col: g.idToLocation[id].col + 1,
-							row: g.idToLocation[id].row,
+// Refactor by ChatGPT
+func (g *galaxyCluster) expandBy(expandAmount int) {
+	for _, data := range []struct {
+		IDs               *map[int][]int
+		limit             int
+		getRowOrColumnPtr func(loc *location) *int
+	}{
+		{
+			IDs:   &g.rowGalaxyIDs,
+			limit: g.highestRow,
+			getRowOrColumnPtr: func(loc *location) *int {
+				return &loc.row
+			},
+		},
+		{
+			IDs:   &g.colGalaxyIDs,
+			limit: g.highestCol,
+			getRowOrColumnPtr: func(loc *location) *int {
+				return &loc.col
+			},
+		},
+	} {
+		for i := 0; i < data.limit; i++ {
+			_, hasGalaxy := (*data.IDs)[i]
+			if !hasGalaxy {
+				for idx, IDs := range *data.IDs {
+					if idx > i {
+						for _, id := range IDs {
+							loc := g.idToLocation[id]
+							*data.getRowOrColumnPtr(&loc) += expandAmount
+							g.idToLocation[id] = loc
 						}
 					}
 				}
@@ -76,12 +85,30 @@ func (g *galaxyCluster) expand() {
 	}
 }
 
-func intabs(number int) int {
+func Absi(number int) int {
 	return int(math.Abs(float64(number)))
 }
 
 func (gc *galaxyCluster) getDistanceBetweenGalaxies(ida, idb int) int {
 	coldiff := gc.idToLocation[ida].col - gc.idToLocation[idb].col
 	rowdiff := gc.idToLocation[ida].row - gc.idToLocation[idb].row
-	return intabs(coldiff) + intabs(rowdiff)
+	return Absi(coldiff) + Absi(rowdiff)
+}
+
+func (gc *galaxyCluster) makeAllPossiblePairs() [][]int {
+	pairs := [][]int{}
+	for ida := 0; ida < len(gc.idToLocation)-1; ida++ {
+		for idb := ida + 1; idb < len(gc.idToLocation); idb++ {
+			pairs = append(pairs, []int{ida, idb})
+		}
+	}
+	return pairs
+}
+
+func (gc *galaxyCluster) getAllDistances() []int {
+	var distances []int
+	for _, pair := range gc.makeAllPossiblePairs() {
+		distances = append(distances, gc.getDistanceBetweenGalaxies(pair[0], pair[1]))
+	}
+	return distances
 }

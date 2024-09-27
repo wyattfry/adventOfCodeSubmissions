@@ -16,11 +16,24 @@ func Solve(file string) {
 }
 
 func calculatePart1(lines []string) int {
-	return -1
+	gc := parseInput(lines)
+	gc.expandBy(1)
+	var sum int
+	for _, dist := range gc.getAllDistances() {
+		sum += dist
+	}
+	return sum
 }
 
 func calculatePart2(lines []string) int {
-	return -1
+	gc := parseInput(lines)
+	gc.expandBy(1000000 - 1)
+	var sum int
+	for _, dist := range gc.getAllDistances() {
+		sum += dist
+	}
+	return sum
+	// 791,134,890,760 is too high
 }
 
 func parseInput(lines []string) galaxyCluster {
