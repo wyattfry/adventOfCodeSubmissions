@@ -45,12 +45,12 @@ func Test_parseInput(t *testing.T) {
 	common.AssertEqual(map[int][]int{
 		0: {0},
 		1: {1},
-	}, sut.colGalaxyIDs, t)
+	}, sut.origColGalaxyIDs, t)
 
 	common.AssertEqual(map[int][]int{
 		0: {0},
 		2: {1},
-	}, sut.rowGalaxyIDs, t)
+	}, sut.origRowGalaxyIDs, t)
 
 	common.AssertEqual(2, sut.highestRow, t)
 	common.AssertEqual(1, sut.highestCol, t)

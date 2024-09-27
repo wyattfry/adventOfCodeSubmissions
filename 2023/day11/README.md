@@ -105,5 +105,19 @@ What if we declare an int variable for each row and column to store the number o
 
 Hmm. Not quite. Ok, instead of just counts, it's a slice of galaxy IDs.
 
+That worked! I think i used a similar approach in Day 3 (Engine Schematic). The crux of it is in the `addGalaxy()` function. For each galaxy found while iterating over the input:
+
+1. append galaxy's ID to the array in the original column-to-IDs map
+2. append galaxy's ID to the array in the original row-to-IDs map
+3. add entry in ID to Location map
+
+This makes it easy to:
+
+1. quickly find rows AND columns without galaxies
+2. change the location of galaxies based on their original location
+
 ## Part 2
 
+I was very glad i chose to make new data structures to solve part one, because part 2 requires adding millions of empty rows and columns. Had i stuck with the data in its original string array format, that would be inefficient.
+
+I adapted my `expand()` function to be instead `expandBy(amount int)`, and it was probably my quickest part 2 solution yet. Or at least, requiring the fewest changes. Yippee.

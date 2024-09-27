@@ -5,9 +5,9 @@ import "math"
 const GALAXY_RUNE = '#'
 
 type galaxyCluster struct {
-	idToLocation                      map[int]location
-	rowGalaxyIDs, colGalaxyIDs        map[int][]int
-	highestRow, highestCol, highestID int
+	idToLocation                       map[int]location
+	origRowGalaxyIDs, origColGalaxyIDs map[int][]int
+	highestRow, highestCol, highestID  int
 }
 
 type location struct {
@@ -16,11 +16,11 @@ type location struct {
 
 func (g *galaxyCluster) addGalaxy(loc location) {
 	// Initialize maps if needed
-	if g.colGalaxyIDs == nil {
-		g.colGalaxyIDs = make(map[int][]int)
+	if g.origColGalaxyIDs == nil {
+		g.origColGalaxyIDs = make(map[int][]int)
 	}
-	if g.rowGalaxyIDs == nil {
-		g.rowGalaxyIDs = make(map[int][]int)
+	if g.origRowGalaxyIDs == nil {
+		g.origRowGalaxyIDs = make(map[int][]int)
 	}
 	if g.idToLocation == nil {
 		g.idToLocation = make(map[int]location)
@@ -30,8 +30,8 @@ func (g *galaxyCluster) addGalaxy(loc location) {
 	addToMap := func(m map[int][]int, key, id int) {
 		m[key] = append(m[key], id)
 	}
-	addToMap(g.colGalaxyIDs, loc.col, g.highestID)
-	addToMap(g.rowGalaxyIDs, loc.row, g.highestID)
+	addToMap(g.origColGalaxyIDs, loc.col, g.highestID)
+	addToMap(g.origRowGalaxyIDs, loc.row, g.highestID)
 
 	// Update location and highest ID
 	g.idToLocation[g.highestID] = loc
@@ -54,14 +54,14 @@ func (g *galaxyCluster) expandBy(expandAmount int) {
 		getRowOrColumnPtr func(loc *location) *int
 	}{
 		{
-			IDs:   &g.rowGalaxyIDs,
+			IDs:   &g.origRowGalaxyIDs,
 			limit: g.highestRow,
 			getRowOrColumnPtr: func(loc *location) *int {
 				return &loc.row
 			},
 		},
 		{
-			IDs:   &g.colGalaxyIDs,
+			IDs:   &g.origColGalaxyIDs,
 			limit: g.highestCol,
 			getRowOrColumnPtr: func(loc *location) *int {
 				return &loc.col
